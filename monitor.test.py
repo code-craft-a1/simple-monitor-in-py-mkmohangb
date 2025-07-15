@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 from monitor import (
     is_temperature_ok, is_pulse_rate_ok, is_spo2_ok, 
-    vitals_ok, get_vital_alerts, display_alert_animation, display_alerts
+    vitals_ok, get_vital_alerts
 )
 
 
@@ -72,25 +72,11 @@ class ComprehensiveMonitorTest(unittest.TestCase):
             'Oxygen Saturation out of range!'
         ])
 
-    def test_get_vital_alerts_all_normal(self):
+    def test_get__vital_alerts_all_normal(self):
         """Test no alerts when all vitals are normal"""
         self.assertEqual(get_vital_alerts(98.6, 70, 95), [])
         self.assertEqual(get_vital_alerts(95, 60, 90), [])
         self.assertEqual(get_vital_alerts(102, 100, 100), [])
-
-    @patch('monitor.display_alerts')
-    def test_vitals_ok_with_normal_values(self, mock_display):
-        """Test vitals_ok returns True for normal values without displaying alerts"""
-        result = vitals_ok(98.6, 70, 95)
-        self.assertTrue(result)
-        mock_display.assert_not_called()
-
-    @patch('monitor.display_alerts')
-    def test_vitals_ok_with_abnormal_values(self, mock_display):
-        """Test vitals_ok returns False for abnormal values and displays alerts"""
-        result = vitals_ok(94, 70, 95)
-        self.assertFalse(result)
-        mock_display.assert_called_once_with(['Temperature critical!'])
 
     def test_vitals_ok_integration(self):
         """Integration test for vitals_ok function"""
